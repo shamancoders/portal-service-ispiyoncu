@@ -1,0 +1,32 @@
+{
+	"release":{
+		"httpserver":{
+			"port" : 3900
+		},
+		"mongodb": {
+			"address":"mongodb://localhost:27017/local_masterdb",
+			"userAddress":"mongodb://localhost:27017/"
+		},
+		"tmpDir":"/tmp"
+	},
+	"development":{
+		"httpserver":{
+			"port" : 3900
+		},
+		"mongodb": {
+			"address":"mongodb://localhost:27017/local_masterdb",
+			"userAddress":"mongodb://localhost:27017/"
+		},
+		"tmpDir":"C:\\arge\\tr216\\temp"
+	},
+	"test":{
+		"httpserver":{
+			"port" : 3901
+		},
+		"mongodb": {
+			"address":"mongodb://localhost:27017/portal-test",
+			"userAddress":"mongodb://localhost:27017/"
+		},
+		"tmpDir":"/tmp"
+	}
+}
