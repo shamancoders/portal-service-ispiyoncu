@@ -87,8 +87,12 @@ class WcfHelper {
 
 			this.proxy.send(message, `http://tempuri.org/${this.namespace}/${funcName}`, (response, ctx)=>{
 				if(ctx.error!=undefined){
-					if(ctx.error['code']=='ENOTFOUND') 
-						return callback({code:'URL_NOT_FOUND',message:'Web Servis URL bulunamadi!'})
+					if(ctx.error['code']=='ENOTFOUND'){
+						if(callback)
+							return callback({code:'URL_NOT_FOUND',message:'Web Servis URL bulunamadi!'})
+						else
+							return
+					}
 					if(ctx.error['code']=='ETIMEDOUT' || ctx.error['code']=='ECONNRESET'){
 
 						if(this.tryCount<3){
@@ -110,14 +114,19 @@ class WcfHelper {
 							},this.tryInterval)
 						}else{
 							this.tryCount=0
-							callback({code:ctx.error['code'],message:ctx.error['code']})
+							if(callback){
+								callback({code:ctx.error['code'],message:ctx.error['code']})
+							}
+							
 						}
 
 
 					}else{
 						this.tryCount=0
 						errorLog('wcf-helper ctx.error:',ctx.error)
-						callback({code:ctx.error['code'],message:ctx.error['code']})
+						if(callback){
+							callback({code:ctx.error['code'],message:ctx.error['code']})
+						}
 					}
 
 				}else{
@@ -172,20 +181,28 @@ class WcfHelper {
 								var errorCode=jsObject['s:Envelope']['s:Body']['s:Fault']['faultcode']['value'] || jsObject['s:Envelope']['s:Body']['s:Fault']['faultcode'] || 'WCF_ERROR'
 
 								var errorMessage=jsObject['s:Envelope']['s:Body']['s:Fault']['faultstring']['value']
-								callback({code:errorCode,message:errorMessage})
+								if(callback){
+									callback({code:errorCode,message:errorMessage})
+								}
+								
 							}else{
 								var body=jsObject['s:Envelope']['s:Body']
-								tempLog('resBody.json',JSON.stringify(jsObject,null,2))
-								callback(null,body)
+								if(callback){
+									callback(null,body)
+								}
 							}
 						}else{
-							callback(err)
+							if(callback){
+								callback(err)
+							}
 						}
 					})
 				}
 			})
 		}catch(tryErr){
-			callback(tryErr)
+			if(callback){
+				callback(tryErr)
+			}
 		}
 	}
 }
