@@ -6,7 +6,9 @@ module.exports =(app)=>{
 
 	var server = http.createServer(app)
 
-	socketHelper.start(server)
+	global.socketHelper.start(server)	
+
+
 
 /**
  * Listen on provided port, on all network interfaces.

@@ -1,5 +1,5 @@
 exports.start= function (server) {
-	socketCorsDomainList=['https://portal.tr216.com','http://portal.tr216.com']
+	socketCorsDomainList=['https://portal.tr216.com','http://portal.tr216.com','http://ganygo.com','http://www.ganygo.com']
 
 
 	global.io = require("socket.io")(server, {
@@ -58,6 +58,11 @@ exports.start= function (server) {
 				socketClients.splice(foundIndex,1)
 			}
 		})
+
+		socket.on('REQUEST_CONSOLE', (cmd,params) => {
+			console.log(`REQUEST_CONSOLE :`,cmd,params)
+			exports.requestConsole(socket,cmd,params)
+		})
 	})
 }
 
@@ -90,4 +95,73 @@ exports.sendTotalUnread=function(socket){
 			socket.emit('TOTAL_UNREAD',totalUnread,dizi)
 		}
 	})
+}
+
+var spawn = require('child_process').spawn
+exports.requestConsole=function(socket,cmd,params=[]){
+	try{
+		if(!['ping','pm2'].includes(cmd)){
+			return hacklemeyeCalisanaMesaj(socket,'RESPONSE_CONSOLE')
+			
+		}else if(cmd=='pm2'){
+			if(params.length>0){
+				if(params[0]!='logs'){
+					return hacklemeyeCalisanaMesaj(socket,'RESPONSE_CONSOLE')
+				}
+			}
+		}
+		var proc = spawn(cmd, params)
+
+		let buf = ''
+		proc.stdout.on('data', (c) => {
+			var line=c.toString()
+			if(line.indexOf('\n')>-1){
+				socket.emit('RESPONSE_CONSOLE',buf)
+				buf=''
+				var dizi=line.split('\n')
+				dizi.forEach((e,index)=>{
+					if(index<dizi.length-1){
+						socket.emit('RESPONSE_CONSOLE',`${e}\n`)
+					}
+				})
+				buf+=dizi[dizi.length-1]
+			}else{
+				buf+=c
+			}
+
+		})
+
+		proc.stderr.on('data', (data) => {
+			socket.emit('RESPONSE_CONSOLE','HATA:' + data.toString('UTF-8'))
+		});
+
+		proc.stdout.on('end', () => {
+			socket.emit('RESPONSE_CONSOLE',buf)
+		})
+	}catch(tryErr){
+		errorLog(tryErr)
+	}
+}
+
+function hacklemeyeCalisanaMesaj(socket,command){
+	var mesajlar=[
+	'Quaeso, rerum curam magis utile!\n',
+	'Please, take care of more useful things!\n',
+	'Lutfen, daha faydali seylerle ilgilen!\n',
+	'Lutfen, daha faydali seylerle ilgilen!\n',
+	'Ugrasma boyle bos islerle\n'
+	]
+
+	var index=0
+	function calistir(){
+		if(index>=mesajlar.length)
+			return
+
+		socket.emit(command,mesajlar[index])
+		index++
+		setTimeout(calistir,4000)
+	}
+	
+
+	calistir()
 }
