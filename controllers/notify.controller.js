@@ -15,7 +15,7 @@ function post(dbModel,req,res,next,cb){
 
 	var dizi=[]
 	var data = req.body || {}
-	console.log(`ispiyoncu notify post geldi. ${dbModel.dbName} data:`,data)
+	
 	data._id=undefined
 	data.dbId=dbModel._id
 	if(data.memberId==undefined){

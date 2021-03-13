@@ -1,9 +1,9 @@
 ﻿var htmlToText = require('html-to-text')
-var request=require('request')
+global.request=require('request')
 var bcrypt = require('bcrypt-nodejs')
 var parseString = require('xml2js').parseString
-var js2xmlparser = require("js2xmlparser")
-var ejs = require('ejs')
+global.js2xmlparser = require("js2xmlparser")
+global.ejs = require('ejs')
 
 global.os=require('os')
 global.sizeOf=require('object-sizeof')
@@ -17,45 +17,45 @@ require('colors')
 
 Date.prototype.yyyymmdd = function () {
 	var yyyy = this.getFullYear().toString()
-    var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
-    var dd = this.getDate().toString()
-    var HH = this.getHours().toString()
-    var min = this.getMinutes().toString()
-    var sec = this.getSeconds().toString()
-    return yyyy + '-' + (mm[1]?mm:"0" + mm[0]) + '-' + (dd[1]?dd:"0" + dd[0]); 
-  }
+	var mm = (this.getMonth() + 1).toString(); 
+	var dd = this.getDate().toString()
+	var HH = this.getHours().toString()
+	var min = this.getMinutes().toString()
+	var sec = this.getSeconds().toString()
+	return yyyy + '-' + (mm[1]?mm:"0" + mm[0]) + '-' + (dd[1]?dd:"0" + dd[0]); 
+}
 
-  Date.prototype.yyyymmddhhmmss = function (middleChar) {
-  	var yyyy = this.getFullYear().toString()
-    var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
-    var dd = this.getDate().toString()
-    var HH = this.getHours().toString()
-    var min = this.getMinutes().toString()
-    var sec = this.getSeconds().toString()
-    return yyyy + '-' + (mm[1]?mm:"0" + mm[0]) + '-' + (dd[1]?dd:"0" + dd[0]) + (middleChar?middleChar:' ') + (HH[1]?HH:"0" + HH[0]) + ':' + (min[1]?min:"0" + min[0]) + ':' + (sec[1]?sec:"0" + sec[0]); 
-  }
+Date.prototype.yyyymmddhhmmss = function (middleChar) {
+	var yyyy = this.getFullYear().toString()
+	var mm = (this.getMonth() + 1).toString();
+	var dd = this.getDate().toString()
+	var HH = this.getHours().toString()
+	var min = this.getMinutes().toString()
+	var sec = this.getSeconds().toString()
+	return yyyy + '-' + (mm[1]?mm:"0" + mm[0]) + '-' + (dd[1]?dd:"0" + dd[0]) + (middleChar?middleChar:' ') + (HH[1]?HH:"0" + HH[0]) + ':' + (min[1]?min:"0" + min[0]) + ':' + (sec[1]?sec:"0" + sec[0]); 
+}
 
-  Date.prototype.yyyymmddmilisecond = function () {
-  	var yyyy = this.getFullYear().toString()
-    var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
-    var dd = this.getDate().toString()
-    var HH = this.getHours().toString()
-    var min = this.getMinutes().toString()
-    var sec = this.getSeconds().toString()
-    var msec = this.getMilliseconds().toString()
-    return yyyy + '-' + (mm[1]?mm:"0" + mm[0]) + '-' + (dd[1]?dd:"0" + dd[0]) + ' ' + (HH[1]?HH:"0" + HH[0]) + ':' + (min[1]?min:"0" + min[0]) + ':' + (sec[1]?sec:"0" + sec[0]) + ':' + msec; 
-  }
-
-
-  Date.prototype.addDays = function(days)
-  {
-  	var dat = new Date(this.valueOf())
-  	dat.setDate(dat.getDate() + days)
-  	return dat
-  }
+Date.prototype.yyyymmddmilisecond = function () {
+	var yyyy = this.getFullYear().toString()
+	var mm = (this.getMonth() + 1).toString(); 
+	var dd = this.getDate().toString()
+	var HH = this.getHours().toString()
+	var min = this.getMinutes().toString()
+	var sec = this.getSeconds().toString()
+	var msec = this.getMilliseconds().toString()
+	return yyyy + '-' + (mm[1]?mm:"0" + mm[0]) + '-' + (dd[1]?dd:"0" + dd[0]) + ' ' + (HH[1]?HH:"0" + HH[0]) + ':' + (min[1]?min:"0" + min[0]) + ':' + (sec[1]?sec:"0" + sec[0]) + ':' + msec; 
+}
 
 
-exports.timeStamp = function () { return (new Date).yyyymmddhhmmss() };  //UTC time stamp
+Date.prototype.addDays = function(days)
+{
+	var dat = new Date(this.valueOf())
+	dat.setDate(dat.getDate() + days)
+	return dat
+}
+
+
+exports.timeStamp = function () { return (new Date).yyyymmddhhmmss() };  
 
 
 exports.datefromyyyymmdd = function (text) {
@@ -63,83 +63,83 @@ exports.datefromyyyymmdd = function (text) {
 	var mm = Number(text.substring(5,7))
 	var dd = Number(text.substring(8,10))
 	var tarih=new Date(yyyy,mm-1,dd,5,0,0)
-    //tarih.setDate(tarih.getDate() + 1)
-    return tarih
-  }
 
-  Date.prototype.yyyymmddhhmmss = function (middleChar) {
-  	var yyyy = this.getFullYear().toString()
-    var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
-    var dd = this.getDate().toString()
-    var HH = this.getHours().toString()
-    var min = this.getMinutes().toString()
-    var sec = this.getSeconds().toString()
-    return yyyy + '-' + (mm[1]?mm:"0" + mm[0]) + '-' + (dd[1]?dd:"0" + dd[0]) + (middleChar?middleChar:' ') + (HH[1]?HH:"0" + HH[0]) + ':' + (min[1]?min:"0" + min[0]) + ':' + (sec[1]?sec:"0" + sec[0]); 
-  }
+	return tarih
+}
 
-
-  exports.wait = function (milisecond) {
-  	var t = new Date().getTime()
-  	while (t + milisecond > new Date().getTime()) {
-  		setTimeout('', 5)
-  	}
-
-  	return
-  }
+Date.prototype.yyyymmddhhmmss = function (middleChar) {
+	var yyyy = this.getFullYear().toString()
+	var mm = (this.getMonth() + 1).toString();
+	var dd = this.getDate().toString()
+	var HH = this.getHours().toString()
+	var min = this.getMinutes().toString()
+	var sec = this.getSeconds().toString()
+	return yyyy + '-' + (mm[1]?mm:"0" + mm[0]) + '-' + (dd[1]?dd:"0" + dd[0]) + (middleChar?middleChar:' ') + (HH[1]?HH:"0" + HH[0]) + ':' + (min[1]?min:"0" + min[0]) + ':' + (sec[1]?sec:"0" + sec[0]); 
+}
 
 
+exports.wait = function (milisecond) {
+	var t = new Date().getTime()
+	while (t + milisecond > new Date().getTime()) {
+		setTimeout('', 5)
+	}
 
-  String.prototype.replaceAll = function (search, replacement) {
-  	var target = this
-  	return target.split(search).join(replacement)
-    // var target = this
-    // return target.replace(new RegExp(search, 'g'), replacement)
-  }
-
-  exports.replaceAll= function (search, replacement) {
-  	var target = this
-  	return target.replace(new RegExp(search, 'g'), replacement)
-  }
-
-  exports.sayMerhaba = function () {
-  	return  new Date().getTime().toString()
-  }
+	return
+}
 
 
-  exports.validEmail=function(email){
-  	return emailvalidator.validate(email)
-  }
 
-  exports.validTelephone=function(tel){
-  	if(tel.trim()=='') return false
-  		var bFound=false
-  	for(var i=0;i<tel.length;i++){
-  		if(!((tel[i]>='0' && tel[i]<='9') || tel[i]=='+') ){
-  			return false
-  		} 
-  	}
-  	return true
-  }
+String.prototype.replaceAll = function (search, replacement) {
+	var target = this
+	return target.split(search).join(replacement)
 
+}
 
-  Date.prototype.monthName = function (language) {
+exports.replaceAll= function (search, replacement) {
+	var target = this
+	return target.replace(new RegExp(search, 'g'), replacement)
+}
+
+exports.sayMerhaba = function () {
+	return  new Date().getTime().toString()
+}
 
 
-  	language = language || 'TR';  
+exports.validEmail=function(email){
 
-  	var monthNames =[]
-  	switch(language){
-  		case 'TR':
-  		case 'tr':
-  		monthNames= ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
-  		break
-  		default:
-  		monthNames= ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-  		break
-  	}
+	return require('email-validator').validate(email)
+}
 
-  	return monthNames[this.getMonth()]
-  }
+exports.validTelephone=function(tel){
+	if(tel.trim()=='') return false
+		var bFound=false
+	for(var i=0;i<tel.length;i++){
+		if(!((tel[i]>='0' && tel[i]<='9') || tel[i]=='+') ){
+			return false
+		} 
+	}
+	return true
+}
+
+
+Date.prototype.monthName = function (language) {
+
+
+	language = language || 'TR';  
+
+	var monthNames =[]
+	switch(language){
+		case 'TR':
+		case 'tr':
+		monthNames= ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"]
+		break
+		default:
+		monthNames= ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+		break
+	}
+
+	return monthNames[this.getMonth()]
+}
 
 // exports.trimNumbers=function(text){
 //     return text.replace( /^\D+/g, '')
@@ -715,49 +715,49 @@ exports.e_invoice2xml=function(invoiceObject,rootName='Invoice'){
 	}
 
 	jsObject=einvoiceXmlHazirla(jsObject)
-    
-    var options={
-    	attributeString:'attr',
-    	valueString:'value',
-    	declaration:{
-    		include:false,
-    		encoding:'UTF-8',
-    		version:'1.0'
-    	},
-    	format:{
-    		doubleQuotes:true
-    	}
-    }
-    var invoiceAttr={
-    	'xmlns:ds':"http://www.w3.org/2000/09/xmldsig#",
-    	'xmlns:qdt':"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2",
-    	'xmlns:cctc':"urn:un:unece:uncefact:documentation:2",
-    	'xmlns:ubltr':"urn:oasis:names:specification:ubl:schema:xsd:TurkishCustomizationExtensionComponents",
-    	'xmlns:xsi':"http://www.w3.org/2001/XMLSchema-instance",
-    	'xmlns:udt':"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2",
-    	'xmlns:cac':"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
-    	'xmlns:ext':"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2",
-    	'xmlns:cbc':"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
-    	'xmlns:xades':"http://uri.etsi.org/01903/v1.3.2#",
-    	'xsi:schemaLocation':"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2 UBL-Invoice-2.1.xsd",
-    	'xmlns':"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
-    }
 
-    var obj={
-    	'attr':invoiceAttr,
-    	'cbc:UBLVersionID':'2.1',
-    	'cbc:CustomizationID':'TR1.2'
-    }
-    Object.keys(jsObject).forEach((key)=>{
-    	if(Object.keys(obj).indexOf(key)<0){
-    		obj[key]=jsObject[key]
-    	}
-    })
-    var xmlString=js2xmlparser.parse(rootName, obj, options)
-    xmlString=xmlString.replace('</cbc:ID>','</cbc:ID><cbc:CopyIndicator>false</cbc:CopyIndicator>')
-    xmlString=xmlString.replaceAll('<cbc:TaxExemptionReason/>','')
-    xmlString=xmlString.replaceAll('<cbc:TaxExemptionReasonCode/>','')
-    xmlString=xmlString.replaceAll('<cbc:IssueDate/>','')
+	var options={
+		attributeString:'attr',
+		valueString:'value',
+		declaration:{
+			include:false,
+			encoding:'UTF-8',
+			version:'1.0'
+		},
+		format:{
+			doubleQuotes:true
+		}
+	}
+	var invoiceAttr={
+		'xmlns:ds':"http://www.w3.org/2000/09/xmldsig#",
+		'xmlns:qdt':"urn:oasis:names:specification:ubl:schema:xsd:QualifiedDatatypes-2",
+		'xmlns:cctc':"urn:un:unece:uncefact:documentation:2",
+		'xmlns:ubltr':"urn:oasis:names:specification:ubl:schema:xsd:TurkishCustomizationExtensionComponents",
+		'xmlns:xsi':"http://www.w3.org/2001/XMLSchema-instance",
+		'xmlns:udt':"urn:un:unece:uncefact:data:specification:UnqualifiedDataTypesSchemaModule:2",
+		'xmlns:cac':"urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
+		'xmlns:ext':"urn:oasis:names:specification:ubl:schema:xsd:CommonExtensionComponents-2",
+		'xmlns:cbc':"urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
+		'xmlns:xades':"http://uri.etsi.org/01903/v1.3.2#",
+		'xsi:schemaLocation':"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2 UBL-Invoice-2.1.xsd",
+		'xmlns':"urn:oasis:names:specification:ubl:schema:xsd:Invoice-2"
+	}
+
+	var obj={
+		'attr':invoiceAttr,
+		'cbc:UBLVersionID':'2.1',
+		'cbc:CustomizationID':'TR1.2'
+	}
+	Object.keys(jsObject).forEach((key)=>{
+		if(Object.keys(obj).indexOf(key)<0){
+			obj[key]=jsObject[key]
+		}
+	})
+	var xmlString=js2xmlparser.parse(rootName, obj, options)
+	xmlString=xmlString.replace('</cbc:ID>','</cbc:ID><cbc:CopyIndicator>false</cbc:CopyIndicator>')
+	xmlString=xmlString.replaceAll('<cbc:TaxExemptionReason/>','')
+	xmlString=xmlString.replaceAll('<cbc:TaxExemptionReasonCode/>','')
+	xmlString=xmlString.replaceAll('<cbc:IssueDate/>','')
     // xmlString=xmlString.replaceAll('<cbc:ID/>','')
     return xmlString
   }
@@ -766,19 +766,19 @@ exports.e_invoice2xml=function(invoiceObject,rootName='Invoice'){
   exports.e_invoiceXslt=function(jsObject){
 
   	var xsltString=''
-  
-    if(jsObject.additionalDocumentReference!=undefined){
-    	jsObject.additionalDocumentReference.forEach((e,index)=>{
-    		if((e.documentType.value || '').toLowerCase() == 'xslt' )
-    			if(e.attachment.embeddedDocumentBinaryObject.value!='') {
-                    xsltString=e.attachment.embeddedDocumentBinaryObject.value
-                  }
 
-                })
-    }
+  	if(jsObject.additionalDocumentReference!=undefined){
+  		jsObject.additionalDocumentReference.forEach((e,index)=>{
+  			if((e.documentType.value || '').toLowerCase() == 'xslt' )
+  				if(e.attachment.embeddedDocumentBinaryObject.value!='') {
+  					xsltString=e.attachment.embeddedDocumentBinaryObject.value
+  				}
 
-    
-    return xsltString
+  			})
+  	}
+
+
+  	return xsltString
   }
 
   exports.eInvoiceRenameKeys=(key)=>{
@@ -1664,4 +1664,33 @@ exports.getParameters=function(callback){
 		}
 	})
 }
+
+
+
+String.prototype.padding = function(n, c)
+{
+	var val = this.valueOf()
+	if ( Math.abs(n) <= val.length ) {
+		return val
+	}
+	var m = Math.max((Math.abs(n) - this.length) || 0, 0)
+	var pad = Array(m + 1).join(String(c || ' ').charAt(0))
+	return (n < 0) ? pad + val : val + pad
+}
+
+
+
+
+global.t=(new Date()).getTime()
+
+global.time=(text='t')=>{
+	var fark=(((new Date()).getTime())-t)/1000
+	console.log(`${text}:`,fark)
+	
+}
+
+global.timeReset=()=>{
+	t=(new Date()).getTime()
+}
+
 
