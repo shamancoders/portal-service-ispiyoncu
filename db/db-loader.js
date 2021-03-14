@@ -364,9 +364,9 @@ global.runServiceOnAllUserDb=(options)=>{
 						var fark=(((new Date()).getTime())-dbModel.isWorking[`${serviceName}_t`])/1000
 						dbModel.isWorking[serviceName]=false
 						if(!err){
-							eventLog(`${dbModel.dbName.padding(20).brightBlue} ${serviceName} finished in ${fark.toString().yellow} sn`)
+							eventLog(`${dbModel.dbName.padding(20).brightBlue} ${serviceName.yellow} finished in ${fark.toString().yellow} sn`)
 						}else{
-							errorLog(`${dbModel.dbName.padding(20).brightBlue} ${serviceName} finished in ${fark.toString().yellow} sn`)
+							errorLog(`${dbModel.dbName.padding(20).brightBlue} ${serviceName.yellow} ${fark.toString().yellow} sn Error:`,err)
 						}
 						dbModel.isWorking[`${serviceName}_endTime`]=(new Date()).getTime()
 					})

@@ -5,7 +5,7 @@ var parseString = require('xml2js').parseString
 global.js2xmlparser = require("js2xmlparser")
 global.ejs = require('ejs')
 
-global.os=require('os')
+
 global.sizeOf=require('object-sizeof')
 global.atob=require('atob')
 global.btoa=require('btoa')
@@ -440,57 +440,57 @@ exports.dynamicSort=function(property) {
 	}
 }
 
-exports.base64ArrayBuffer=function(arrayBuffer) {
-	var base64    = ''
-	var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+// exports.base64ArrayBuffer=function(arrayBuffer) {
+// 	var base64    = ''
+// 	var encodings = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
 
-	var bytes         = new Uint8Array(arrayBuffer)
-	var byteLength    = bytes.byteLength
-	var byteRemainder = byteLength % 3
-	var mainLength    = byteLength - byteRemainder
+// 	var bytes         = new Uint8Array(arrayBuffer)
+// 	var byteLength    = bytes.byteLength
+// 	var byteRemainder = byteLength % 3
+// 	var mainLength    = byteLength - byteRemainder
 
-	var a, b, c, d
-	var chunk
+// 	var a, b, c, d
+// 	var chunk
 
-  // Main loop deals with bytes in chunks of 3
-  for (var i = 0; i < mainLength; i = i + 3) {
-    // Combine the three bytes into a single integer
-    chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
+//   // Main loop deals with bytes in chunks of 3
+//   for (var i = 0; i < mainLength; i = i + 3) {
+//     // Combine the three bytes into a single integer
+//     chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2]
 
-    // Use bitmasks to extract 6-bit segments from the triplet
-    a = (chunk & 16515072) >> 18 // 16515072 = (2^6 - 1) << 18
-    b = (chunk & 258048)   >> 12 // 258048   = (2^6 - 1) << 12
-    c = (chunk & 4032)     >>  6 // 4032     = (2^6 - 1) << 6
-    d = chunk & 63               // 63       = 2^6 - 1
+//     // Use bitmasks to extract 6-bit segments from the triplet
+//     a = (chunk & 16515072) >> 18 // 16515072 = (2^6 - 1) << 18
+//     b = (chunk & 258048)   >> 12 // 258048   = (2^6 - 1) << 12
+//     c = (chunk & 4032)     >>  6 // 4032     = (2^6 - 1) << 6
+//     d = chunk & 63               // 63       = 2^6 - 1
 
-    // Convert the raw binary segments to the appropriate ASCII encoding
-    base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
-  }
+//     // Convert the raw binary segments to the appropriate ASCII encoding
+//     base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d]
+//   }
 
-  // Deal with the remaining bytes and padding
-  if (byteRemainder == 1) {
-  	chunk = bytes[mainLength]
+//   // Deal with the remaining bytes and padding
+//   if (byteRemainder == 1) {
+//   	chunk = bytes[mainLength]
 
-    a = (chunk & 252) >> 2 // 252 = (2^6 - 1) << 2
+//     a = (chunk & 252) >> 2 // 252 = (2^6 - 1) << 2
 
-    // Set the 4 least significant bits to zero
-    b = (chunk & 3)   << 4 // 3   = 2^2 - 1
+//     // Set the 4 least significant bits to zero
+//     b = (chunk & 3)   << 4 // 3   = 2^2 - 1
 
-    base64 += encodings[a] + encodings[b] + '=='
-  } else if (byteRemainder == 2) {
-  	chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1]
+//     base64 += encodings[a] + encodings[b] + '=='
+//   } else if (byteRemainder == 2) {
+//   	chunk = (bytes[mainLength] << 8) | bytes[mainLength + 1]
 
-    a = (chunk & 64512) >> 10 // 64512 = (2^6 - 1) << 10
-    b = (chunk & 1008)  >>  4 // 1008  = (2^6 - 1) << 4
+//     a = (chunk & 64512) >> 10 // 64512 = (2^6 - 1) << 10
+//     b = (chunk & 1008)  >>  4 // 1008  = (2^6 - 1) << 4
 
-    // Set the 2 least significant bits to zero
-    c = (chunk & 15)    <<  2 // 15    = 2^4 - 1
+//     // Set the 2 least significant bits to zero
+//     c = (chunk & 15)    <<  2 // 15    = 2^4 - 1
 
-    base64 += encodings[a] + encodings[b] + encodings[c] + '='
-  }
+//     base64 += encodings[a] + encodings[b] + encodings[c] + '='
+//   }
 
-  return base64
-}
+//   return base64
+// }
 
 exports.strToDate=function(text) {
     var gun = text.substr(0,2); //29.01.2007
@@ -516,119 +516,127 @@ exports.strToDate=function(text) {
   Number.prototype.round = function(precision){
   	var t = this
   	var rakam=1
-  	if(precision<=0) return Math.round(t)
-  		for(var i=0;i<precision;i++){
-  			rakam = rakam * 10
+  	if(precision<=0)
+  		return Math.round(t)
+  	for(var i=0;i<precision;i++){
+  		rakam = rakam * 10
+  	}
+  	var sonuc=Math.round(rakam*t)/rakam
+
+  	return sonuc
+
+  }
+  Number.prototype.toDigit = function(digit){
+  	var t = this
+  	var s=t.toString()
+  	if(s.length<digit){
+  		s='0'.repeat(digit-s.length) + s
+  	}
+  	return s
+  }
+  exports.deleteObjectFields = function (obj,fields) {
+  	if(obj!=undefined){
+  		if(typeof obj['limit']!='undefined' && typeof obj['totalDocs']!='undefined' && typeof obj['totalPages']!='undefined' && typeof obj['page']!='undefined'){
+  			obj['pageSize']=obj.limit
+  			obj.limit=undefined
+  			delete obj.limit
+
+  			obj['recordCount']=obj.totalDocs
+  			obj.totalDocs=undefined
+  			delete obj.totalDocs
+
+  			obj['pageCount']=obj.totalPages
+  			obj.totalPages=undefined
+  			delete obj.totalPages
+
   		}
-  		var sonuc=Math.round(rakam*t)/rakam
-
-  		return sonuc
-
   	}
 
-  	exports.deleteObjectFields = function (obj,fields) {
-  		if(obj!=undefined){
-  			if(typeof obj['limit']!='undefined' && typeof obj['totalDocs']!='undefined' && typeof obj['totalPages']!='undefined' && typeof obj['page']!='undefined'){
-  				obj['pageSize']=obj.limit
-  				obj.limit=undefined
-  				delete obj.limit
+  	if(obj==undefined || fields==undefined) return obj
+  		if(obj==null || fields==null) return obj
 
-  				obj['recordCount']=obj.totalDocs
-  				obj.totalDocs=undefined
-  				delete obj.totalDocs
+  			for(var key in obj){
 
-  				obj['pageCount']=obj.totalPages
-  				obj.totalPages=undefined
-  				delete obj.totalPages
+  				if(fields.indexOf(key.toString())>=0){
+  					obj[key]=undefined
+  					delete obj[key]
+  				}
 
+  			}
+
+  			return obj
+  		}
+
+  		exports.isValidPassword = function(normal_password, kriptolanmis_password){
+  			return bcrypt.compareSync(normal_password, kriptolanmis_password)
+  		}
+
+
+
+  		exports.createHash = function(password){
+  			return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
+  		}
+
+  		exports.getdim = function(arr)
+  		{
+  			if (!Array.isArray(arr)) {
+  				return 0; 
+  			}else{
+  				if (!Array.isArray(arr[0])) {
+  					return 1
+  				}else{
+  					return 1+getdim(arr[0])
+  				}
   			}
   		}
 
-  		if(obj==undefined || fields==undefined) return obj
-  			if(obj==null || fields==null) return obj
 
-  				for(var key in obj){
+  		exports.mongoDate=function(dateStr){
+  			d=new Date(dateStr); 
+  			d.setMinutes(d.getMinutes()+(new Date()).getTimezoneOffset()*1)
+  			eventLog(d.toISOString())
+  			return d.toISOString()
+  		}
 
-  					if(fields.indexOf(key.toString())>=0){
-  						obj[key]=undefined
-  						delete obj[key]
-  					}
+  		exports.round = function(number, decimalPlaces) {
 
+  			number = isNaN(number) ? 0 : number
+  			decimalPlaces = !decimalPlaces ? 0 : decimalPlaces
+
+  			var multiple = Math.pow(10, decimalPlaces)
+  			return Math.round(number * multiple) / multiple
+  		}
+
+  		exports.renameObjectProperty=function(obj,renameFunction){
+
+  			if(Array.isArray(obj)){
+  				var newObj=[]
+  				for(var i=0;i<obj.length;i++){
+  					newObj.push(exports.renameObjectProperty(obj[i],renameFunction))
   				}
+  				return newObj
+  			}else if (typeof obj==='object'){
+  				var newObj={}
 
+  				var keys=Object.keys(obj)
+  				keys.forEach((key)=>{
+  					var newKey=renameFunction(key)
+  					if(Array.isArray(obj[key]) || typeof obj[key]==='object'){
+  						newObj[newKey]=exports.renameObjectProperty(obj[key],renameFunction)
+  					}else{
+  						newObj[newKey]=obj[key]
+  					}
+  				})
+  				return newObj
+  			}else{
   				return obj
   			}
+  		}
 
-  			exports.isValidPassword = function(normal_password, kriptolanmis_password){
-  				return bcrypt.compareSync(normal_password, kriptolanmis_password)
-  			}
-
-
-
-  			exports.createHash = function(password){
-  				return bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
-  			}
-
-  			exports.getdim = function(arr)
-  			{
-  				if (!Array.isArray(arr)) {
-  					return 0; 
-  				}else{
-  					if (!Array.isArray(arr[0])) {
-  						return 1
-  					}else{
-  						return 1+getdim(arr[0])
-  					}
-  				}
-  			}
-
-
-  			exports.mongoDate=function(dateStr){
-  				d=new Date(dateStr); 
-  				d.setMinutes(d.getMinutes()+(new Date()).getTimezoneOffset()*1)
-  				eventLog(d.toISOString())
-  				return d.toISOString()
-  			}
-
-  			exports.round = function(number, decimalPlaces) {
-
-  				number = isNaN(number) ? 0 : number
-  				decimalPlaces = !decimalPlaces ? 0 : decimalPlaces
-
-  				var multiple = Math.pow(10, decimalPlaces)
-  				return Math.round(number * multiple) / multiple
-  			}
-
-  			exports.renameObjectProperty=function(obj,renameFunction){
+  		exports.deleteObjectProperty=function(obj,propertyName){
+  			if(obj==null) return {}
 
   				if(Array.isArray(obj)){
-  					var newObj=[]
-  					for(var i=0;i<obj.length;i++){
-  						newObj.push(exports.renameObjectProperty(obj[i],renameFunction))
-  					}
-  					return newObj
-  				}else if (typeof obj==='object'){
-  					var newObj={}
-
-  					var keys=Object.keys(obj)
-  					keys.forEach((key)=>{
-  						var newKey=renameFunction(key)
-  						if(Array.isArray(obj[key]) || typeof obj[key]==='object'){
-  							newObj[newKey]=exports.renameObjectProperty(obj[key],renameFunction)
-  						}else{
-  							newObj[newKey]=obj[key]
-  						}
-  					})
-  					return newObj
-  				}else{
-  					return obj
-  				}
-  			}
-
-  			exports.deleteObjectProperty=function(obj,propertyName){
-  				if(obj==null) return {}
-
-  					if(Array.isArray(obj)){
         // eventLog('typeof obj: array[] length:',obj.length)
         var newObj=[]
         for(var i=0;i<obj.length;i++){
