@@ -39,7 +39,6 @@ module.exports=()=>{
 		socketHelper.start(server)
 		dbLoader((err)=>{
 			if(!err){
-				refreshRepoDb()
 				
 			}else{
 				errorLog(err)
