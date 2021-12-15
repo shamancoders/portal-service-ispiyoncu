@@ -28,24 +28,16 @@ app.use(bodyParser.urlencoded({ limit: "100mb", extended: true, parameterLimit: 
 app.use(cookieParser())
 app.use(methodOverride())
 
-//indexRouter(app)
-
 app.set('port', config.httpserver.port)
 
-// global.fileImporter = require('./lib/file_importer')
-// global.documentHelper = require('./lib/document_helper')
-// global.printHelper = require('./lib/print_helper')
-// global.programs=require('./services/programs/programs')
 global.auth = require('./lib/rest-helper')(config.passport_api)
 
-process.on('uncaughtException', function(err) {
-	errorLog('Caught exception: ', err)
-
-	if(config.status != 'development') {
-		mail.sendErrorMail(`${(new Date()).yyyymmddhhmmss()} ${app.get('name')} Error`, errObj)
-
-	}
-})
+if(config.status != 'development') {
+	process.on('uncaughtException', function(err) {
+		errorLog('Caught exception: ', err)
+		mail.sendErrorMail(`${(new Date()).yyyymmddhhmmss()} ${app.get('name')} Error`, err)
+	})
+}
 
 
 module.exports = () => {
@@ -54,10 +46,10 @@ module.exports = () => {
 			if(!err) {
 				require('./routes/index')(app)
 				global.socketHelper = require('./lib/socket-helper')
-				socketHelper.start(server, (token,cb) => {
-					auth.request('/passport', {method:'POST', body:{token:token}}, {}, (err, resp) => {
+				socketHelper.start(server, (token, cb) => {
+					auth.request('/passport', { method: 'POST', body: { token: token } }, {}, (err, resp) => {
 						if(!err) {
-							cb(null,resp.data)
+							cb(null, resp.data)
 						} else {
 							cb(err)
 						}
