@@ -7,7 +7,6 @@ var logger = require('morgan')
 var favicon = require('serve-favicon')
 var methodOverride = require('method-override')
 
-//var indexRouter = require('./routes/index')
 var dbLoader = require('./db/db-loader')
 var httpServer = require('./lib/http-server.js')
 
@@ -18,7 +17,7 @@ global.version = '20210916'
 global.app = express()
 var cors = require('cors')
 app.use(cors())
-var flash = require('connect-flash')
+// var flash = require('connect-flash')
 
 app.use(favicon(path.join(__dirname, 'resources', 'web-icon.png')))
 
