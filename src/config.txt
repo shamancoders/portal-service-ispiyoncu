@@ -3,8 +3,8 @@
 	"version": "1.0.1",
 	"description": "Gany Portal Ispiyon Service",
 	"config_file": "c:/arge/tr216/.config/config-all.json",
-	"passport_api": "http://pass.ganygo.com/auth",
-	"passport_login": "http://pass.ganygo.com/login",
+	"passport_api": "http://tr216.com/passport/auth",
+	"passport_login": "http://tr216.com/passport/login",
 	"httpserver": {
 		"port": 1000
 	},
